@@ -17,7 +17,7 @@ export default class FormEdit extends Component {
 		const baseURL =
 			window.location.hostname === 'localhost'
 				? 'http://localhost:3000/article'
-				: 'https://liverpooltest-1.herokuapp.com';
+				: 'https://liverpooltest-1.herokuapp.com/article';
 		axios
 			.get(`${baseURL}/${this.props.match.params.id}`)
 			.then(res => {
