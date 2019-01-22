@@ -62,7 +62,7 @@ export default class Home extends Component {
 										${article.price}
 										.00
 									</p>
-									<Link to="." className="card-link" onClick={() => this.editArticle(article._id)}>
+									<Link to={`/edit/${article._id}`} className="card-link">
 										Editar
 									</Link>
 									<Link

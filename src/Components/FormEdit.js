@@ -1,21 +1,32 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { saveArticle } from '../productService';
+import { editArticle } from '../productService';
+import axios from 'axios';
 
-export default class FormNew extends Component {
+export default class FormEdit extends Component {
 	constructor() {
 		super();
 		this.state = {
 			file: null,
 			image: null,
-			article: {
-				name: '',
-				price: '',
-				photo: null,
-			},
+			article: {},
 		};
 	}
+	componentWillMount = () => {
+		// Get articles on DB this.props.match.params.id
+		const baseURL =
+			window.location.hostname === 'localhost'
+				? 'http://localhost:3000/article'
+				: 'https://simplekitchen.herokuapp.com';
+		axios
+			.get(`${baseURL}/${this.props.match.params.id}`)
+			.then(res => {
+				const article = res.data.article;
+				this.setState({ article });
+			});
+	};
 	imageHandler = e => {
+		console.log(e.target.files[0]);
 		if (e.target.files[0]) {
 			this.setState({
 				image: e.target.files[0],
@@ -24,7 +35,7 @@ export default class FormNew extends Component {
 				file: URL.createObjectURL(e.target.files[0]),
 			});
 		} else {
-            this.setState({
+			this.setState({
 				file: null,
 			});
 		}
@@ -39,16 +50,23 @@ export default class FormNew extends Component {
 		e.preventDefault();
 		let { article } = this.state;
 		let { image } = this.state;
-		article.photo = image;
-		saveArticle(this.state.article, this.props.history);
+		if (image) {
+			article.photo = image;
+		}
+		editArticle(
+			this.state.article,
+			this.state.article._id,
+			this.props.history,
+		);
 	};
 	render() {
 		const { file } = this.state;
+		let image = this.state.article.photo;
 		return (
 			<div className="container">
 				<div className="card text-center">
 					<div className="card-body">
-						<h5 className="card-title">Add a new product</h5>
+						<h5 className="card-title">Edit this product</h5>
 						<form
 							className="text-left"
 							onSubmit={this.handleSubmit}
@@ -68,6 +86,7 @@ export default class FormNew extends Component {
 										aria-describedby="signupUsername"
 										name="name"
 										onChange={this.handleChange}
+										defaultValue={this.state.article.name}
 									/>
 								</div>
 							</div>
@@ -86,6 +105,7 @@ export default class FormNew extends Component {
 										aria-describedby="signupPass"
 										name="price"
 										onChange={this.handleChange}
+										defaultValue={this.state.article.price}
 									/>
 								</div>
 							</div>
@@ -113,16 +133,22 @@ export default class FormNew extends Component {
 								/>
 								{file ? (
 									<img
-                                        responsive="true"
-										// className="img-thumbnail"
+										responsive="true"
+										// className="img-fluid"
 										src={this.state.file}
-                                        alt="alt"
-                                        
-                                        width="200"
+										alt="alt"
+										width="200"
 										height="200"
 									/>
 								) : (
-									<div />
+									<img
+                                        responsive="true"
+										// className="img-thumbnail"
+										src={image}
+                                        alt="alt"
+                                        width="200"
+										height="200"
+									/>
 								)}
 							</div>
 							<div className="form-group row">
@@ -135,7 +161,7 @@ export default class FormNew extends Component {
 										type="submit"
 										className="btn btn-primary"
 									>
-										Guardar
+										Actualizar
 									</button>
 									<Link to="/">
 										<button
