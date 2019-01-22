@@ -12,7 +12,11 @@ export default class Home extends Component {
     }
     
     getArticles() {
-        axios.get('http://localhost:3000/article')
+        const baseURL =
+			window.location.hostname === 'localhost'
+				? 'http://localhost:3000/article'
+				: 'https://liverpooltest-1.herokuapp.com';
+        axios.get(baseURL)
 			.then(res => {
 				const articles = res.data.articles;
 				this.setState({ articles });

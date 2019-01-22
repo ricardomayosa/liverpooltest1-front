@@ -4,7 +4,7 @@ import axios from 'axios';
 const baseURL =
   window.location.hostname === "localhost"
     ? "http://localhost:3000/article"
-    : "https://simplekitchen.herokuapp.com";
+    : "https://liverpooltest-1.herokuapp.com";
 
 // Create
 export const saveArticle = (article, history) => {
